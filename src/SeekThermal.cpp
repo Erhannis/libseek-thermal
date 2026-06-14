@@ -10,10 +10,10 @@
 using namespace LibSeek;
 
 SeekThermal::SeekThermal() :
-    SeekThermal(std::string(), std::string())
+    SeekThermal("", "")
 { }
 
-SeekThermal::SeekThermal(std::string ffc_filename, std::string dev_filename) :
+SeekThermal::SeekThermal(const char* ffc_filename, const char* dev_filename) :
     SeekCam(0x289d, 0x0010, m_buffer,
             THERMAL_RAW_HEIGHT, THERMAL_RAW_WIDTH, THERMAL_REQUEST_SIZE,
             cv::Rect(0, 1, THERMAL_WIDTH, THERMAL_HEIGHT), ffc_filename, dev_filename)

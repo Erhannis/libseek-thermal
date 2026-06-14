@@ -67,7 +67,7 @@ public:
      *  product_id: usb product id
      *  timeout:    timeout usb requests
      */
-    SeekDevice(int vendor_id, int product_id, std::string dev_filename, int timeout=500);
+    SeekDevice(int vendor_id, int product_id, const char* dev_filename, int timeout=500);
 
     ~SeekDevice();
 
@@ -115,7 +115,7 @@ public:
 private:
     int m_vendor_id;
     int m_product_id;
-    std::string m_dev_filename;
+    const char* m_dev_filename;
     int m_timeout;
     bool m_is_opened;
 

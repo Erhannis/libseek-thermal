@@ -9,7 +9,7 @@
 
 using namespace LibSeek;
 
-SeekCam::SeekCam(int vendor_id, int product_id, uint16_t* buffer, size_t raw_height, size_t raw_width, size_t request_size, cv::Rect roi, std::string ffc_filename, std::string dev_filename) :
+SeekCam::SeekCam(int vendor_id, int product_id, uint16_t* buffer, size_t raw_height, size_t raw_width, size_t request_size, cv::Rect roi, const char* ffc_filename, const char* dev_filename) :
     m_offset(0x4000),
     m_ffc_filename(ffc_filename),
     m_is_opened(false),
@@ -37,6 +37,7 @@ SeekCam::~SeekCam()
 
 bool SeekCam::open()
 {
+    std::string m_ffc_filename(m_ffc_filename);
     if (m_ffc_filename != std::string()) {
         m_additional_ffc = cv::imread(m_ffc_filename, -1);
 

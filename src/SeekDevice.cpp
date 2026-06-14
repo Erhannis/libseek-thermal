@@ -13,7 +13,7 @@
 
 using namespace LibSeek;
 
-SeekDevice::SeekDevice(int vendor_id, int product_id, std::string dev_filename, int timeout) :
+SeekDevice::SeekDevice(int vendor_id, int product_id, const char* dev_filename, int timeout) :
     m_vendor_id(vendor_id),
     m_product_id(product_id),
     m_dev_filename(dev_filename),
@@ -157,6 +157,7 @@ bool SeekDevice::open_device()
 
     int bus, device;
     bool match_bd = false;
+    std::string m_dev_filename(m_dev_filename);
     debug("input devpath [%d] %s\n", m_dev_filename.length(), m_dev_filename.c_str());
     if (m_dev_filename.length() > 0) {
         // Device provided

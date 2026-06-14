@@ -256,8 +256,8 @@ int main(int argc, char** argv) {
 
     // Setup seek camera
     LibSeek::SeekCam* seek;
-    LibSeek::SeekThermalPro seekpro(args::get(_ffc), args::get(_dev));
-    LibSeek::SeekThermal seekclassic(args::get(_ffc), args::get(_dev));
+    LibSeek::SeekThermalPro seekpro(args::get(_ffc).c_str(), args::get(_dev).c_str());
+    LibSeek::SeekThermal seekclassic(args::get(_ffc).c_str(), args::get(_dev).c_str());
     if (camtype == "seekpro") {
         seek = &seekpro;
     } else {
