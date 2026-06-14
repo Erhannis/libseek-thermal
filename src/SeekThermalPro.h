@@ -29,7 +29,7 @@ public:
      *      be subtracted from each retrieved frame. If not, no additional
      *      flat field calibration will be applied
      */
-    SeekThermalPro(std::string ffc_filename);
+    SeekThermalPro(std::string ffc_filename, std::string dev_filename);
 
     virtual bool init_cam();
     virtual int frame_id();

@@ -6,14 +6,17 @@
 #include "SeekDevice.h"
 #include "SeekLogging.h"
 #include <libusb.h>
+#include <libudev.h>
 #include <endian.h>
 #include <stdio.h>
+#include <cstring>
 
 using namespace LibSeek;
 
-SeekDevice::SeekDevice(int vendor_id, int product_id, int timeout) :
+SeekDevice::SeekDevice(int vendor_id, int product_id, std::string dev_filename, int timeout) :
     m_vendor_id(vendor_id),
     m_product_id(product_id),
+    m_dev_filename(dev_filename),
     m_timeout(timeout),
     m_is_opened(false),
     m_ctx(nullptr),
@@ -134,6 +137,15 @@ bool SeekDevice::fetch_frame(uint16_t* buffer, std::size_t size, std::size_t req
     return true;
 }
 
+std::string get_realpath(std::string path) {
+    char *real_path = realpath(path.c_str(), NULL);
+    if (!real_path) { // or: if (res != NULL)
+        return std::string();
+    }
+    std::string str(real_path);
+    return str;
+}
+
 bool SeekDevice::open_device()
 {
     int res;
@@ -142,6 +154,33 @@ bool SeekDevice::open_device()
     bool found = false;
     struct libusb_device **devs;
     struct libusb_device_descriptor desc;
+
+    int bus, device;
+    bool match_bd = false;
+    debug("input devpath [%d] %s\n", m_dev_filename.length(), m_dev_filename.c_str());
+    if (m_dev_filename.length() > 0) {
+        // Device provided
+
+        std::string devpath = get_realpath(m_dev_filename);
+        debug("input real devpath [%d] %s\n", devpath.length(), devpath.c_str());
+
+        if (devpath.length() <= 0) {
+            error("Error: device invalid: %s\n", m_dev_filename.c_str());
+            return false;
+        }
+
+        int n = sscanf(devpath.c_str(), "/dev/bus/usb/%d/%d", &bus, &device);
+
+        if (n != 2) {
+            error("Error: not a /dev/bus/usb device: %s\n", devpath.c_str());
+            return false;
+        }
+
+        // Succeeded
+        debug("parsed bus/device %d/%d\n", bus, device);
+
+        match_bd = true;
+    }
 
     cnt = libusb_get_device_list(m_ctx, &devs);
     if (cnt < 0) {
@@ -161,9 +200,53 @@ bool SeekDevice::open_device()
 
         debug("vendor: %x  product: %x\n", desc.idVendor, desc.idProduct);
 
+        debug("desc: bLength %d, bDescriptorType %d, bcdUSB %d, bDeviceClass %d, bDeviceSubClass %d, bDeviceProtocol %d, bMaxPacketSize0 %d, idVendor %d, idProduct %d, bcdDevice %d, iManufacturer %d, iProduct %d, iSerialNumber %d, bNumConfigurations %d\n", desc.bLength, desc.bDescriptorType, desc.bcdUSB, desc.bDeviceClass, desc.bDeviceSubClass, desc.bDeviceProtocol, desc.bMaxPacketSize0, desc.idVendor, desc.idProduct, desc.bcdDevice, desc.iManufacturer, desc.iProduct, desc.iSerialNumber, desc.bNumConfigurations);
+        uint8_t path[255];
+        res = libusb_get_port_numbers(devs[idx_dev], path, 255);
+        if (res < 0) {
+          error("failed to get path: %s\n", libusb_error_name(res));
+        } else {
+          debug("path: ");
+          for (int i = 0; i < res; i++) {
+            printf("%d, ", path[i]);
+          }
+          printf(";\n");
+        }
+        res = libusb_get_bus_number(devs[idx_dev]);
+        if (res < 0) {
+          error("failed to get bus: %s\n", libusb_error_name(res));
+        } else {
+          debug("bus: %d\n", res);
+        }
+        if (match_bd && bus != res) {
+          error("did not match bus\n");
+          continue;
+        }
+        debug("!!matched bus\n");
+        res = libusb_get_port_number(devs[idx_dev]);
+        if (res < 0) {
+          error("failed to get port: %s\n", libusb_error_name(res));
+        } else {
+          debug("port: %d\n", res);
+        }
+        res = libusb_get_device_address(devs[idx_dev]);
+        if (res < 0) {
+          error("failed to get address: %s\n", libusb_error_name(res));
+        } else {
+          debug("address: %d\n", res);
+        }
+        if (match_bd && device != res) {
+          error("did not match addr\n");
+          continue;
+        }
+        debug("!!matched address\n");
         if (desc.idVendor == m_vendor_id && desc.idProduct == m_product_id) {
-            found = true;
-            break;
+          debug("!!matched vendor/product\n");
+          found = true;
+          break;
+        } else {
+          error("did not match vendor/product\n");
+          continue;
         }
     }
 

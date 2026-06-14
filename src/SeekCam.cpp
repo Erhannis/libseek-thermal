@@ -9,11 +9,11 @@
 
 using namespace LibSeek;
 
-SeekCam::SeekCam(int vendor_id, int product_id, uint16_t* buffer, size_t raw_height, size_t raw_width, size_t request_size, cv::Rect roi, std::string ffc_filename) :
+SeekCam::SeekCam(int vendor_id, int product_id, uint16_t* buffer, size_t raw_height, size_t raw_width, size_t request_size, cv::Rect roi, std::string ffc_filename, std::string dev_filename) :
     m_offset(0x4000),
     m_ffc_filename(ffc_filename),
     m_is_opened(false),
-    m_dev(vendor_id, product_id),
+    m_dev(vendor_id, product_id, dev_filename),
     m_raw_data(buffer),
     m_raw_data_size(raw_height * raw_width),
     m_request_size(request_size),

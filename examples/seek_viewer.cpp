@@ -182,6 +182,7 @@ int main(int argc, char** argv) {
     args::ValueFlag<std::string> _mode(parser, "mode", "The mode to use - v4l2, window, file", {'m', "mode"});
     args::ValueFlag<std::string> _output(parser, "output", "Name of the file or video device to write to", {'o', "output"});
     args::ValueFlag<std::string> _ffc(parser, "FFC", "Additional Flat Field calibration - provide ffc file", {'F', "FFC"});
+    args::ValueFlag<std::string> _dev(parser, "dev", "Device path, e.g. /dev/usb2", {'d', "dev"});
     args::ValueFlag<int> _fps(parser, "fps", "Video Output FPS - Kludge factor", {'f', "fps"});
     args::ValueFlag<float> _scale(parser, "scaling", "Output Scaling - multiple of original image", {'s', "scale"});
     args::ValueFlag<int> _colormap(parser, "colormap", "Color Map - number between 0 and 21 (see: cv::ColormapTypes for maps available in your version of OpenCV)", { 'c', "colormap" });
@@ -255,8 +256,8 @@ int main(int argc, char** argv) {
 
     // Setup seek camera
     LibSeek::SeekCam* seek;
-    LibSeek::SeekThermalPro seekpro(args::get(_ffc));
-    LibSeek::SeekThermal seekclassic(args::get(_ffc));
+    LibSeek::SeekThermalPro seekpro(args::get(_ffc), args::get(_dev));
+    LibSeek::SeekThermal seekclassic(args::get(_ffc), args::get(_dev));
     if (camtype == "seekpro") {
         seek = &seekpro;
     } else {

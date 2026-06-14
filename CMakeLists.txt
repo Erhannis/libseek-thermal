@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH "${libseek-thermal_SOURCE_DIR}/cmake")
 include(build_type)
 
 set (WITH_ADDRESS_SANITIZER false CACHE BOOL "Enable address sanitizer")
-set (WITH_DEBUG_VERBOSITY false CACHE BOOL "Enable verbose stdout messages")
+set (WITH_DEBUG_VERBOSITY true CACHE BOOL "Enable verbose stdout messages")
 set (default_build_type "Release")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -17,6 +17,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 if (NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 endif ()
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--copy-dt-needed-entries")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--copy-dt-needed-entries")
 
 if (WITH_DEBUG_VERBOSITY)
     add_definitions(-DSEEK_DEBUG)

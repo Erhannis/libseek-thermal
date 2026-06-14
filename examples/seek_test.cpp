@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-    LibSeek::SeekThermal seek(argc == 2 ? argv[1] : "");
+    LibSeek::SeekThermal seek(argc >= 2 ? argv[1] : "", argc >= 3 ? argv[2] : "");
     cv::Mat frame, grey_frame;
 
     if (!seek.open()) {

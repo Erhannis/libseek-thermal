@@ -24,7 +24,11 @@ include_directories (
 add_library (seek_static STATIC ${SRC})
 add_library (seek SHARED ${SRC})
 
-target_link_libraries (seek
+find_library(HAS_LIBUDEV udev)
+
+target_link_libraries (
+    seek
+    udev
     ${LIBUSB_LIBRARIES}
     ${OpenCV_LIBS}
 )
