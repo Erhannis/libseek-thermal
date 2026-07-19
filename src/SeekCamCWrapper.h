@@ -8,14 +8,16 @@ extern "C" {
 #endif
 
 struct FakeMatU8 {
-  int width;
-  int height;
+  int rows;
+  int cols;
+  int channels;
   char* data;
 };
 
 struct FakeMatU16 {
-  int width;
-  int height;
+  int rows;
+  int cols;
+  int channels;
   short* data;
 };
 
