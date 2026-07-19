@@ -28,6 +28,10 @@ public:
      *      gradient elimination. If provided and found, the image will
      *      be subtracted from each retrieved frame. If not, no additional
      *      flat field calibration will be applied
+     *  
+     *  dev_filename:
+     *      Filename for camera device.  Some restrictions may apply,
+     *      such as "must be in /dev".
      */
     SeekThermalPro(const char* ffc_filename, const char* dev_filename);
 

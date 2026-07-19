@@ -1,5 +1,6 @@
 set (HEADERS
     SeekCam.h
+    SeekCamCWrapper.h
     SeekDevice.h
     seek.h
     SeekLogging.h
@@ -9,6 +10,7 @@ set (HEADERS
 
 set (SOURCES
     SeekCam.cpp
+    SeekCamCWrapper.cpp
     SeekDevice.cpp
     SeekThermal.cpp
     SeekThermalPro.cpp
