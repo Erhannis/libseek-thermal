@@ -37,7 +37,7 @@ SeekCam::~SeekCam()
 
 bool SeekCam::open()
 {
-    std::string m_ffc_filename(m_ffc_filename);
+    std::string m_ffc_filename(this->m_ffc_filename);
     if (m_ffc_filename != std::string()) {
         m_additional_ffc = cv::imread(m_ffc_filename, -1);
 

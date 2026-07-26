@@ -157,7 +157,7 @@ bool SeekDevice::open_device()
 
     int bus, device;
     bool match_bd = false;
-    std::string m_dev_filename(m_dev_filename);
+    std::string m_dev_filename(this->m_dev_filename);
     debug("input devpath [%d] %s\n", m_dev_filename.length(), m_dev_filename.c_str());
     if (m_dev_filename.length() > 0) {
         // Device provided
